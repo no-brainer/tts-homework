@@ -10,14 +10,19 @@ logger = logging.getLogger(__name__)
 class CollatorFn:
 
     def __call__(self, instances: List[Tuple]) -> Dict:
-        waveform, waveform_length, transcript, tokens, token_lengths = list(
-            zip(*instances)
-        )
+        if len(instances[0]) > 3:
+            waveform, waveform_length, transcript, tokens, token_lengths = list(
+                zip(*instances)
+            )
+        else:
+            waveform, waveform_length = None, None
+            transcript, tokens, token_lengths = list(zip(*instances))
 
-        waveform = pad_sequence([
-            waveform_[0] for waveform_ in waveform
-        ]).transpose(0, 1)
-        waveform_length = torch.cat(waveform_length)
+        if waveform is not None:
+            waveform = pad_sequence([
+                waveform_[0] for waveform_ in waveform
+            ]).transpose(0, 1)
+            waveform_length = torch.cat(waveform_length)
 
         tokens = pad_sequence([
             tokens_[0] for tokens_ in tokens

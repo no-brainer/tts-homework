@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from tts_hw.base.base_model import BaseModel
 from tts_hw.model.modules import PositionalEncoding, FFTransformer
 from tts_hw.model.duration_modeling import regulate_len, DurationPredictor
-from tts_hw.model.utils import get_mask_from_lengths, get_mask_from_padding
+from tts_hw.utils import get_mask_from_lengths, get_mask_from_padding
 
 
 class FastSpeech(BaseModel):
@@ -51,7 +51,7 @@ class FastSpeech(BaseModel):
         enc_embs = self.encoder(x, mask=mask)
 
         log_durations = self.duration_pred(enc_embs, mask)
-        durations = torch.clamp(torch.exp(log_durations), 0, max_duration)
+        durations = torch.clamp(torch.exp(log_durations) - 1, 0, max_duration)
         upsampled, lens = regulate_len(enc_embs, durations)
         upsampled = self.pos_enc(upsampled)
 

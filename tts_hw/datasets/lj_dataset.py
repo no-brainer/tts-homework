@@ -23,9 +23,9 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         waveform, _, _, transcript = super().__getitem__(index)
         waveform_length = torch.tensor([waveform.shape[-1]]).int()
 
-        tokens, token_lengths = self._tokenizer(transcript)
+        tokens, token_length = self._tokenizer(transcript)
 
-        return waveform, waveform_length, transcript, tokens, token_lengths
+        return waveform, waveform_length, transcript, tokens, token_length
 
     def decode(self, tokens, lengths):
         result = []

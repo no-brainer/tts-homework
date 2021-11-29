@@ -57,6 +57,9 @@ class GraphemeAligner(nn.Module):
             wav_lengths: torch.Tensor,
             texts: Union[str, List[str]]
     ):
+        wav2vec_device = next(self._wav2vec2.parameters()).device
+        wavs = wavs.to(wav2vec_device)
+
         if isinstance(texts, str):
             texts = [texts]
         batch_size = wavs.shape[0]

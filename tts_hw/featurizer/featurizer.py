@@ -9,6 +9,10 @@ class MelSpectrogram(nn.Module):
     def __init__(self, sr, win_length, hop_length, n_fft, f_min, f_max, n_mels, power):
         super(MelSpectrogram, self).__init__()
 
+        self.sr = sr
+        self.win_length = win_length
+        self.hop_length = hop_length
+
         self.mel_spectrogram = torchaudio.transforms.MelSpectrogram(
             sample_rate=sr,
             win_length=win_length,

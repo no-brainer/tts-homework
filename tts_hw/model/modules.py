@@ -26,10 +26,10 @@ class PosConvFF(nn.Module):
         self.layer_norm = nn.LayerNorm(d_model)
 
     def forward(self, x: Tensor) -> Tensor:
-        output = self.conv(x.transpose(1, 2))
+        output = self.layer_norm(x)
+        output = self.conv(output.transpose(1, 2))
         output = output.transpose(1, 2)
-        output += x
-        return self.layer_norm(output)
+        return output + x
 
 
 class FFTBlock(nn.Module):
@@ -46,8 +46,9 @@ class FFTBlock(nn.Module):
 
     def forward(self, x: Tensor,
                 padding_mask: Optional[Tensor] = None, attn_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
-        out, attn_scores = self.attn(x, x, x, mask=attn_mask)
-        out = self.ln(self.dropout(out) + x)
+        out = self.ln(x)
+        out, attn_scores = self.attn(out, out, out, mask=attn_mask)
+        out = self.dropout(out) + x
         out *= padding_mask
 
         out = self.pos_conv(out)

@@ -4,21 +4,26 @@ import torchaudio
 
 class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
 
-    def __init__(self, root, mode):
+    def __init__(self, root, mode, limit=None):
         super().__init__(root=root)
         self._tokenizer = torchaudio.pipelines.TACOTRON2_GRIFFINLIM_CHAR_LJSPEECH.get_text_processor()
         self.mode = mode
+        self.limit = limit
+
+        self.train_size = int(0.8 * self.full_size)
+        self.test_size = super().__len__() - train_size
 
     def __len__(self):
-        full_size = super().__len__()
-        train_size = int(0.8 * full_size)
+        if self.limit is not None:
+            return self.limit
+
         if self.mode == "train":
-            return train_size
-        return full_size - train_size
+            return self.train_size
+        return self.test_size
 
     def __getitem__(self, index: int):
         if self.mode != "train":
-            index += int(0.8 * super().__len__())
+            index += self.train_size
 
         waveform, _, _, transcript = super().__getitem__(index)
         waveform_length = torch.tensor([waveform.shape[-1]]).int()

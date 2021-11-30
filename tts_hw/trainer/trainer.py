@@ -197,10 +197,10 @@ class Trainer(BaseTrainer):
         transcripts = kwargs.get("text")[0]
         melspec_preds = kwargs.get("melspec_preds")[0]
         melspec_target = kwargs.get("melspec")[0]
-        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0))
-        self.writer.add_text("transcripts", "\n<br>\n".join(transcripts))
-        self.writer.add_image("predicted spectrograms", melspec_preds.cpu())
-        self.writer.add_image("true spectrograms", melspec_target.cpu())
+        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0)).squeeze(0)
+        self.writer.add_text("transcripts", transcripts)
+        self.writer.add_image("predicted spectrograms", melspec_preds)
+        self.writer.add_image("true spectrograms", melspec_target)
         self.writer.add_audio("predicted audio", waveforms.cpu(), self.sr)
 
     @torch.no_grad()

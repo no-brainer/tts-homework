@@ -2,6 +2,8 @@ from datetime import datetime
 
 import numpy as np
 
+from tts_hw.logger.utils import plot_spectrogram_to_buf
+
 
 class WanDBWriter:
     def __init__(self, config, logger):
@@ -67,25 +69,3 @@ class WanDBWriter:
             self.scalar_name(scalar_name): self.wandb.Html(text)
         }, step=self.step)
 
-    def add_histogram(self, scalar_name, hist, bins=None):
-        hist = hist.detach().cpu().numpy()
-        np_hist = np.histogram(hist, bins=bins)
-        if np_hist[0].shape[0] > 512:
-            np_hist = np.histogram(hist, bins=512)
-
-        hist = self.wandb.Histogram(
-            np_histogram=np_hist
-        )
-
-        self.wandb.log({
-            self.scalar_name(scalar_name): hist
-        }, step=self.step)
-
-    def add_images(self, scalar_name, images):
-        raise NotImplementedError()
-
-    def add_pr_curve(self, scalar_name, scalar):
-        raise NotImplementedError()
-
-    def add_embedding(self, scalar_name, scalar):
-        raise NotImplementedError()

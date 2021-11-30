@@ -2,15 +2,20 @@
   "name": "default_config",
   "n_gpu": 1,
   "preprocessing": {
-    "sr": 22050,
-    "win_length": 1024,
-    "hop_length": 256,
-    "n_fft": 1024,
-    "f_min": 0,
-    "f_max": 80,
-    "n_mels": 80,
-    "power": 1.0
-  },
+      "melspec": {
+        "sr": 22050,
+        "win_length": 1024,
+        "hop_length": 256,
+        "n_fft": 1024,
+        "f_min": 0,
+        "f_max": 80,
+        "n_mels": 80,
+        "power": 1.0
+      },
+      "aligner": {
+        "sr": 22050
+      }
+    },
   "arch": {
     "type": "FastSpeech",
     "args": {
@@ -26,7 +31,7 @@
       "dec_kernel": 3,
       "dec_num_heads": 2,
       "duration_kernel": 3,
-      "duration_filter_size": 256,
+      "duration_filter_size": 256
     }
   },
   "data": {

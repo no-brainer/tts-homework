@@ -13,11 +13,13 @@ def regulate_len(hidden_states: Tensor, durations: Tensor, alpha: float = 1.0) -
     repetitions = torch.round(durations.float() * alpha).long()  # B x L
     frame_lengths = repetitions.sum(dim=1)
 
-    seqs = []
-    for phoneme_seq, reps in zip(hidden_states, repetitions):
-        seqs.append(torch.repeat_interleave(phoneme_seq, reps, dim=0))
+    out = torch.zeros(
+        hidden_states.size(0), frame_lengths.max(), hidden_states.size(2),
+        device=hidden_states.device
+    )
+    for i, (phoneme_seq, reps) in enumerate(zip(hidden_states, repetitions)):
+        out[i, :reps.sum()] = torch.repeat_interleave(phoneme_seq, reps, dim=0)
 
-    out = pad_sequence(seqs, batch_first=True)
     return out, frame_lengths
 
 

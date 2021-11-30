@@ -43,16 +43,14 @@ class FastSpeech(BaseModel):
         self.proj = nn.Linear(emb_dim, n_mel_channels)
 
     def forward(self, text_encoded: Tensor, *args, **kwargs) -> Tuple[Tensor, Tensor, Tensor]:
-        max_duration = kwargs.get("max_duration", 75)
-
         x = self.pos_enc(self.emb(text_encoded))
 
         mask = get_mask_from_padding(text_encoded)
         enc_embs = self.encoder(x, mask=mask)
 
         log_durations = self.duration_pred(enc_embs, mask)
-        durations = torch.clamp(torch.exp(log_durations) - 1, 0, max_duration)
-        upsampled, lens = regulate_len(enc_embs, durations)
+        true_durations = kwargs.get("durations")
+        upsampled, lens = regulate_len(enc_embs, true_durations)
         upsampled = self.pos_enc(upsampled)
 
         mask = get_mask_from_lengths(lens, upsampled.size(1))

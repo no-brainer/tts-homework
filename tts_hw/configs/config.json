@@ -13,7 +13,7 @@
         "power": 1.0
       },
       "aligner": {
-        "sr": 22050
+        "orig_sr": 22050
       }
     },
   "arch": {
@@ -39,7 +39,7 @@
       "batch_size": 2,
       "num_workers": 2,
       "dataset": {
-        "type": "LJDataset",
+        "type": "LJSpeechDataset",
         "args": {
           "root": "./data/datasets",
           "mode": "train"
@@ -50,7 +50,7 @@
       "batch_size": 2,
       "num_workers": 2,
       "dataset": {
-        "type": "LJDataset",
+        "type": "LJSpeechDataset",
         "args": {
           "root": "./data/datasets",
           "mode": "train"

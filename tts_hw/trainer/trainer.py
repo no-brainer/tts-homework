@@ -59,7 +59,7 @@ class Trainer(BaseTrainer):
         """
         Move all necessary tensors to the GPU
         """
-        for tensor_for_gpu in ["spectrogram", "text_encoded", "durations"]:
+        for tensor_for_gpu in ["melspec", "text_encoded", "durations"]:
             batch[tensor_for_gpu] = batch[tensor_for_gpu].to(device)
         return batch
 
@@ -136,7 +136,7 @@ class Trainer(BaseTrainer):
         loss, loss_parts = self.criterion(**batch)
         batch["loss"] = loss
         batch["duration loss"] = loss_parts["duration_loss"]
-        batch["mel loss"] = loss_parts["mel loss"]
+        batch["mel loss"] = loss_parts["mel_loss"]
 
         if is_train:
             batch["loss"].backward()
@@ -194,14 +194,14 @@ class Trainer(BaseTrainer):
         # 2. true melspecs
         # 3. predicted melspecs
         # 4. predicted audio
-        transcripts = kwargs.get("transcripts")[:num_examples]
+        transcripts = kwargs.get("text")[:num_examples]
         melspec_preds = kwargs.get("melspec_preds")[:num_examples]
         melspec_target = kwargs.get("melspec")[:num_examples]
-        waveforms = self.vocoder.inference(melspec_preds)
+        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1))
         self.writer.add_text("transcripts", "\n<br>\n".join(transcripts))
         self.writer.add_image("predicted spectrograms", melspec_preds.cpu())
         self.writer.add_image("true spectrograms", melspec_target.cpu())
-        self.writer.add_audio("predicted audio", waveforms.cpu())
+        self.writer.add_audio("predicted audio", waveforms.cpu(), self.sr)
 
     @torch.no_grad()
     def get_grad_norm(self, norm_type=2):

@@ -57,12 +57,15 @@ class CollatorFn:
         durations = self.aligner(waveforms, waveform_lengths, transcript)
 
         full_duration = durations.sum(axis=1)
-        durations /= full_duration[None, :]
+        durations /= full_duration[:, None]
 
         waveform_lengths = (waveform_lengths.double() * full_duration).long()
         waveforms *= get_mask_from_lengths(waveform_lengths, waveforms.size(1))
 
         melspec = self.featurizer(waveforms)
         melspec_length = (waveform_lengths / self.featurizer.hop_length).long()
+        melspec = melspec.transpose(-1, -2)
 
+        durations *= melspec_length[:, None]
+        
         return waveforms, waveform_lengths, melspec, melspec_length, durations

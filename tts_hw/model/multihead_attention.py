@@ -32,12 +32,12 @@ class MultiHeadAttention(nn.Module):
 
         attn_scores = torch.matmul(q, k.transpose(-2, -1)) / (self.d_k ** 0.5)  # B x n_heads x L_t x L_s
         if mask is not None:  # mask shape B x L_t x L_s
-            attn_scores.masked_fill_(mask.unsqueeze(1), float("-inf"))
+            attn_scores.masked_fill_(~mask.unsqueeze(1), float("-inf"))
 
         attn_scores = self.dropout(F.softmax(attn_scores, dim=-1))
         out = torch.matmul(attn_scores, v)  # B x n_heads x L_t x d_v
         out = torch.cat(torch.split(out, 1, dim=1), dim=-1).squeeze(1)  # B x L x (d_v * n_heads)
-        out = self.Linear(out)
+        out = self.fc(out)
 
         attn_scores = attn_scores.sum(dim=1)  # B x L_t x L_s
 

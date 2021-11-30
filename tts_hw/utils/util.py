@@ -57,11 +57,11 @@ def prepare_device(n_gpu_use):
 
 
 def get_mask_from_padding(x, padding_idx=0):
-    return (x != padding_idx).float()
+    return x != padding_idx
 
 
 def get_mask_from_lengths(lengths, max_len):
-    rng = torch.arange(max_len)
+    rng = torch.arange(max_len, device=lengths.device)
     return rng.unsqueeze(0) < lengths.unsqueeze(1)
 
 

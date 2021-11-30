@@ -49,10 +49,10 @@ class FFTBlock(nn.Module):
         out = self.ln(x)
         out, attn_scores = self.attn(out, out, out, mask=attn_mask)
         out = self.dropout(out) + x
-        out *= padding_mask
+        out *= padding_mask.unsqueeze(2)
 
         out = self.pos_conv(out)
-        out *= padding_mask
+        out *= padding_mask.unsqueeze(2)
 
         return out, attn_scores
 
@@ -64,7 +64,7 @@ class FFTransformer(nn.Module):
 
         self.fft_blocks = nn.ModuleList()
         for _ in range(num_layers):
-            self.enc_fft_blocks.append(FFTBlock(d_model, num_heads, hidden, kernel, dropout=dropout))
+            self.fft_blocks.append(FFTBlock(d_model, num_heads, hidden, kernel, dropout=dropout))
 
     def forward(self, x, mask=None):
         # mask size is B x L x F

@@ -15,14 +15,7 @@ def get_dataloaders(configs: ConfigParser, grapheme_aligner: GraphemeAligner, fe
         num_workers = params.get("num_workers", 1)
 
         # create and join datasets
-        datasets = []
-        for ds in params["datasets"]:
-            datasets.append(configs.init_obj(ds, tts_hw.datasets))
-        assert len(datasets)
-        if len(datasets) > 1:
-            dataset = ConcatDataset(datasets)
-        else:
-            dataset = datasets[0]
+        dataset = configs.init_obj(params["dataset"], tts_hw.datasets)
 
         # select batch size or batch sampler
         assert xor("batch_size" in params, "batch_sampler" in params), \

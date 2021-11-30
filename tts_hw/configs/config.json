@@ -91,7 +91,7 @@
     "monitor": "min val_loss",
     "early_stop": -1,
     "visualize": "wandb",
-    "wandb_project": "tts_hw",
+    "wandb_project": "tts-hw",
     "grad_norm_clip": 10
   }
 }

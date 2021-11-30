@@ -58,7 +58,7 @@ class FastSpeech(BaseModel):
         mask = get_mask_from_lengths(lens, upsampled.size(1))
         dec_embs = self.decoder(upsampled, mask=mask)
         out = self.proj(dec_embs)
-        return out, mask, log_durations
+        return out, lens, log_durations
 
     def infer(self):
         pass

@@ -37,7 +37,7 @@
   "data": {
     "train": {
       "batch_size": 2,
-      "num_workers": 2,
+      "num_workers": 0,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {
@@ -48,7 +48,7 @@
     },
     "val": {
       "batch_size": 2,
-      "num_workers": 2,
+      "num_workers": 0,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {

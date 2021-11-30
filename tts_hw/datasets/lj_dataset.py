@@ -10,8 +10,9 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         self.mode = mode
         self.limit = limit
 
-        self.train_size = int(0.8 * self.full_size)
-        self.test_size = super().__len__() - train_size
+        full_size = super().__len__()
+        self.train_size = int(0.8 * full_size)
+        self.test_size = full_size - self.train_size
 
     def __len__(self):
         if self.limit is not None:

@@ -5,3 +5,5 @@ matplotlib
 numpy
 librosa
 pandas
+tqdm
+torchvision

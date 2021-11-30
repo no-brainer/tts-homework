@@ -1,0 +1,92 @@
+{
+  "name": "default_config",
+  "n_gpu": 1,
+  "preprocessing": {
+    "sr": 22050,
+    "win_length": 1024,
+    "hop_length": 256,
+    "n_fft": 1024,
+    "f_min": 0,
+    "f_max": 80,
+    "n_mels": 80,
+    "power": 1.0
+  },
+  "arch": {
+    "type": "FastSpeech",
+    "args": {
+      "vocab_size": 39,
+      "n_mel_channels": 80,
+      "emb_dim": 384,
+      "enc_num_layers": 6,
+      "enc_hidden": 1536,
+      "enc_kernel": 3,
+      "enc_num_heads": 2,
+      "dec_num_layers": 6,
+      "dec_hidden": 1536,
+      "dec_kernel": 3,
+      "dec_num_heads": 2,
+      "duration_kernel": 3,
+      "duration_filter_size": 256,
+    }
+  },
+  "data": {
+    "train": {
+      "batch_size": 2,
+      "num_workers": 2,
+      "dataset": {
+        "type": "LJDataset",
+        "args": {
+          "root": "./data/datasets",
+          "mode": "train"
+        }
+      }
+    },
+    "val": {
+      "batch_size": 2,
+      "num_workers": 2,
+      "dataset": {
+        "type": "LJDataset",
+        "args": {
+          "root": "./data/datasets",
+          "mode": "train"
+        }
+      }
+    }
+  },
+  "optimizer": {
+    "type": "SGD",
+    "args": {
+      "lr": 1e-2,
+      "momentum": 0.9,
+      "nesterov": true
+    }
+  },
+  "loss": {
+    "type": "FastSpeechLoss",
+    "args": {
+      "duration_pred_coef": 1.0
+    }
+  },
+  "lr_scheduler": {
+    "type": "OneCycleLR",
+    "args": {
+      "steps_per_epoch": 51,
+      "epochs": 10,
+      "anneal_strategy": "cos",
+      "max_lr": 5e-1,
+      "pct_start": 0.2
+    }
+  },
+  "trainer": {
+    "epochs": 10,
+    "len_epoch": 50,
+    "save_dir": "saved/",
+    "save_period": 5,
+    "verbosity": 2,
+    "monitor": "min val_loss",
+    "early_stop": -1,
+    "visualize": "wandb",
+    "wandb_project": "tts_hw",
+    "grad_norm_clip": 10
+  }
+}

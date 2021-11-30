@@ -29,7 +29,7 @@ def main(config):
     logger = config.get_logger("train")
 
     # vocoder
-    vocoder = Vocoder("./data/waveglow_256channels_universal_v5.pt")
+    vocoder = Vocoder("./data/waveglow_256channels_universal_v5.pt").eval()
 
     # melspec
     melspec = MelSpectrogram(**config["preprocessing"]["melspec"])

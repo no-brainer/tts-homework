@@ -196,7 +196,9 @@ class Trainer(BaseTrainer):
         # 4. predicted audio
         transcripts = kwargs.get("text")[0]
         melspec_preds = kwargs.get("melspec_preds")[0]
+        melspec_preds = melspec_preds[:kwargs.get("melspec_pred_lengths")[0].item()]
         melspec_target = kwargs.get("melspec")[0]
+        melspec_target = melspec_target[:kwargs.get("melspec_lengths")[0].item()]
         waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0)).squeeze(0)
         self.writer.add_text("transcripts", transcripts)
         self.writer.add_image("predicted spectrograms", melspec_preds)

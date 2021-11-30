@@ -7,3 +7,4 @@ librosa
 pandas
 tqdm
 torchvision
+PIL

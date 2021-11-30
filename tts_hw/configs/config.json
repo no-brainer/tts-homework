@@ -59,11 +59,9 @@
     }
   },
   "optimizer": {
-    "type": "SGD",
+    "type": "AdamW",
     "args": {
-      "lr": 1e-2,
-      "momentum": 0.9,
-      "nesterov": true
+      "lr": 2e-5,
     }
   },
   "loss": {
@@ -75,16 +73,16 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 51,
-      "epochs": 10,
+      "steps_per_epoch": 100,
+      "epochs": 50,
       "anneal_strategy": "cos",
-      "max_lr": 5e-1,
+      "max_lr": 2e-5,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 10,
-    "len_epoch": 50,
+    "epochs": 50,
+    "len_epoch": 100,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,

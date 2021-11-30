@@ -189,15 +189,15 @@ class Trainer(BaseTrainer):
             total = self.len_epoch
         return base.format(current, total, 100.0 * current / total)
 
-    def _log_media(self, num_examples=3, *args, **kwargs):
+    def _log_media(self, *args, **kwargs):
         # 1. transcripts
         # 2. true melspecs
         # 3. predicted melspecs
         # 4. predicted audio
-        transcripts = kwargs.get("text")[:num_examples]
-        melspec_preds = kwargs.get("melspec_preds")[:num_examples]
-        melspec_target = kwargs.get("melspec")[:num_examples]
-        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1))
+        transcripts = kwargs.get("text")[0]
+        melspec_preds = kwargs.get("melspec_preds")[0]
+        melspec_target = kwargs.get("melspec")[0]
+        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0))
         self.writer.add_text("transcripts", "\n<br>\n".join(transcripts))
         self.writer.add_image("predicted spectrograms", melspec_preds.cpu())
         self.writer.add_image("true spectrograms", melspec_target.cpu())

@@ -57,5 +57,5 @@ class DurationPredictor(nn.Module):
         # x.shape == (B, L, F)
         x = self.net(x).squeeze(-1)
         if mask is not None:
-            x.masked_fill_(mask, 0.)
+            x.masked_fill_(~mask, 0.)
         return x

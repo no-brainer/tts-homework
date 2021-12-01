@@ -42,7 +42,8 @@
         "type": "LJSpeechDataset",
         "args": {
           "root": "./data/datasets",
-          "mode": "train"
+          "mode": "train",
+          "limit": 2
         }
       }
     },
@@ -53,7 +54,8 @@
         "type": "LJSpeechDataset",
         "args": {
           "root": "./data/datasets",
-          "mode": "train"
+          "mode": "test",
+          "limit": 2
         }
       }
     }

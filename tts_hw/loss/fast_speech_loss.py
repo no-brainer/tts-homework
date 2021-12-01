@@ -36,5 +36,5 @@ class FastSpeechLoss(nn.Module):
 
         loss = mel_loss + self.duration_pred_coef * duration_loss
 
-        results = dict(mel_loss=mel_loss, duration_loss=duration_loss)
+        results = dict(mel_loss=mel_loss.item(), duration_loss=duration_loss.item())
         return loss, results

@@ -13,6 +13,7 @@ class FastSpeechLoss(nn.Module):
     def __init__(self, duration_pred_coef):
         super(FastSpeechLoss, self).__init__()
         self.duration_pred_coef = duration_pred_coef
+        self.mel_silence = -11.5129251
 
     def forward(self, *args, **kwargs) -> Tuple[Tensor, Dict]:
         mel_tgt = kwargs.get("melspec")
@@ -22,7 +23,7 @@ class FastSpeechLoss(nn.Module):
         mel_mask = mel_mask.to(mel_tgt.device)
 
         mel_pred = kwargs.get("melspec_preds")
-        mel_pred = F.pad(mel_pred, (0, 0, 0, mel_tgt.size(1) - mel_pred.size(1), 0, 0))
+        mel_pred = F.pad(mel_pred, (0, 0, 0, mel_tgt.size(1) - mel_pred.size(1), 0, 0), value=self.mel_silence)
 
         mel_loss = (F.mse_loss(mel_pred, mel_tgt, reduction="none") * mel_mask).sum() / mel_mask.sum()
 

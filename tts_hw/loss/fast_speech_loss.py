@@ -24,7 +24,7 @@ class FastSpeechLoss(nn.Module):
         mel_mask = get_mask_from_lengths(mel_lens, mel_pred.size(1)).unsqueeze(2)
         mel_mask = mel_mask.to(mel_tgt.device)
 
-        mel_loss = (F.mse_loss(mel_pred, mel_tgt, reduction="none") * mel_mask).sum() / mel_mask.sum()
+        mel_loss = (F.mse_loss(mel_pred, mel_tgt, reduction="none") * mel_mask).mean(dim=-1).sum() / mel_mask.sum()
 
         dur_tgt = torch.log1p(kwargs.get("durations"))
         dur_lens = kwargs.get("text_encoded_lengths")

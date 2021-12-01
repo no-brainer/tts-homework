@@ -200,10 +200,13 @@ class Trainer(BaseTrainer):
         melspec_target = kwargs.get("melspec")[0]
         melspec_target = melspec_target[:kwargs.get("melspec_lengths")[0].item()]
         waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0)).squeeze(0)
+        waveform_true = kwargs.get("waveform")[0]
+        waveform_true = waveform_true[:kwargs.get("waveform_lengths")[0].item()]
         self.writer.add_text("transcripts", transcripts)
         self.writer.add_image("predicted spectrograms", melspec_preds)
         self.writer.add_image("true spectrograms", melspec_target)
         self.writer.add_audio("predicted audio", waveforms.cpu(), self.sr)
+        self.writer.add_audio("true audio", waveform_true.cpu(), self.sr)
 
     @torch.no_grad()
     def get_grad_norm(self, norm_type=2):

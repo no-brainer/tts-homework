@@ -18,7 +18,7 @@ class FastSpeechLoss(nn.Module):
     def forward(self, *args, **kwargs) -> Tuple[Tensor, Dict]:
         mel_tgt = kwargs.get("melspec")
         mel_lens = kwargs.get("melspec_pred_lengths")
-        mel_mask = get_mask_from_lengths(mel_lens, mel_tgt.size(1)).unsqueeze(2)
+        mel_mask = get_mask_from_lengths(mel_lens, mel_pred.size(1)).unsqueeze(2)
 
         mel_mask = mel_mask.to(mel_tgt.device)
 

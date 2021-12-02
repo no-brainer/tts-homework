@@ -50,7 +50,7 @@ def main(config):
         model = torch.nn.DataParallel(model, device_ids=device_ids)
 
     # setup data_loader instances
-    dataloaders = get_dataloaders(config, aligner, melspec)
+    dataloaders = get_dataloaders(config)
 
     # get function handles of loss and metrics
     loss_module = config.init_obj(config["loss"], module_loss).to(device)
@@ -67,6 +67,8 @@ def main(config):
         config=config,
         device=device,
         vocoder=vocoder,
+        aligner=aligner,
+        featurizer=melspec,
         data_loader=dataloaders["train"],
         valid_data_loader=dataloaders["val"],
         lr_scheduler=lr_scheduler,

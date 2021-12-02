@@ -16,7 +16,7 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         self.train_size = int(0.8 * full_size)
         self.test_size = full_size - self.train_size
 
-        self.pattern = re.compile(r"[^a-z !'(),.:;?\-_]")
+        self.pattern = re.compile(r"[^a-zA-Z !'(),.:;?\-_]")
 
     def __len__(self):
         if self.limit is not None:

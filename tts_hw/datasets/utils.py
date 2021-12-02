@@ -3,13 +3,11 @@ from operator import xor
 from torch.utils.data import DataLoader, ConcatDataset
 
 import tts_hw.datasets
-from tts_hw.alignment.aligner import GraphemeAligner
 from tts_hw.collate_fn.collate import CollatorFn
-from tts_hw.featurizer.featurizer import MelSpectrogram
 from tts_hw.utils.parse_config import ConfigParser
 
 
-def get_dataloaders(configs: ConfigParser, grapheme_aligner: GraphemeAligner, featurizer: MelSpectrogram):
+def get_dataloaders(configs: ConfigParser):
     dataloaders = {}
     for split, params in configs["data"].items():
         num_workers = params.get("num_workers", 1)
@@ -29,7 +27,7 @@ def get_dataloaders(configs: ConfigParser, grapheme_aligner: GraphemeAligner, fe
 
         # create dataloader
         dataloader = DataLoader(
-            dataset, batch_size=bs, collate_fn=CollatorFn(aligner=grapheme_aligner, featurizer=featurizer),
+            dataset, batch_size=bs, collate_fn=CollatorFn(),
             shuffle=shuffle, num_workers=num_workers, batch_sampler=batch_sampler)
         dataloaders[split] = dataloader
     return dataloaders

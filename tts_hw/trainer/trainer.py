@@ -5,7 +5,7 @@ from torchvision.transforms import ToTensor
 from tqdm import tqdm
 
 from tts_hw.base import BaseTrainer
-from tts_hw.utils import inf_loop, MetricTracker
+from tts_hw.utils import inf_loop, MetricTracker, get_mask_from_lengths
 
 
 class Trainer(BaseTrainer):
@@ -21,6 +21,8 @@ class Trainer(BaseTrainer):
             config,
             device,
             vocoder,
+            aligner,
+            featurizer,
             data_loader,
             valid_data_loader=None,
             lr_scheduler=None,
@@ -46,6 +48,8 @@ class Trainer(BaseTrainer):
         self.sr = sr
 
         self.vocoder = vocoder
+        self.aligner = aligner
+        self.featurizer = featurizer
 
         self.train_metrics = MetricTracker(
             "loss", "duration loss", "mel loss", "grad norm", writer=self.writer
@@ -61,6 +65,25 @@ class Trainer(BaseTrainer):
         """
         for tensor_for_gpu in ["melspec", "text_encoded", "durations"]:
             batch[tensor_for_gpu] = batch[tensor_for_gpu].to(device)
+        return batch
+
+    def update_batch(self, batch):
+        durations = self.aligner(
+            batch["waveform"], batch["waveform_lengths"], batch["text"]
+        )
+
+        full_duration = durations.sum(axis=1)
+        durations /= full_duration[:, None]
+
+        batch["waveform_lengths"] = (batch["waveform_lengths"].double() * full_duration).long()
+        batch["waveform"] *= get_mask_from_lengths(batch["waveform_lengths"], batch["waveform"].size(1))
+
+        melspec = self.featurizer(batch["waveform"])
+        batch["melspec_lengths"] = (batch["waveform_lengths"] / self.featurizer.hop_length).long()
+        batch["melspec"] = melspec.transpose(-1, -2)
+
+        batch["durations"] = durations * batch["melspec_lengths"][:, None]
+
         return batch
 
     def _clip_grad_norm(self):
@@ -124,6 +147,7 @@ class Trainer(BaseTrainer):
         return log
 
     def process_batch(self, batch, is_train: bool, metrics: MetricTracker):
+        batch = self.update_batch(batch)
         batch = self.move_batch_to_device(batch, self.device)
         if is_train:
             self.optimizer.zero_grad()

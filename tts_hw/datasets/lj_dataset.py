@@ -1,3 +1,5 @@
+import re
+
 import torch
 import torchaudio
 
@@ -14,6 +16,8 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         self.train_size = int(0.8 * full_size)
         self.test_size = full_size - self.train_size
 
+        self.pattern = re.compile(r"[^a-z !'(),.:;?\-_]")
+
     def __len__(self):
         if self.limit is not None:
             return self.limit
@@ -28,6 +32,8 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
 
         waveform, _, _, transcript = super().__getitem__(index)
         waveform_length = torch.tensor([waveform.shape[-1]]).int()
+
+        transcript = self.pattern.sub("", transcript)
 
         tokens, token_length = self._tokenizer(transcript)
 

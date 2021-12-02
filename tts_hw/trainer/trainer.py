@@ -190,22 +190,22 @@ class Trainer(BaseTrainer):
         return base.format(current, total, 100.0 * current / total)
 
     def _log_media(self, *args, **kwargs):
-        # 1. transcripts
-        # 2. true melspecs
-        # 3. predicted melspecs
-        # 4. predicted audio
         transcripts = kwargs.get("text")[0]
+        self.writer.add_text("transcripts", transcripts)
+
         melspec_preds = kwargs.get("melspec_preds")[0]
         melspec_preds = melspec_preds[:kwargs.get("melspec_pred_lengths")[0].item()]
+        self.writer.add_image("predicted spectrograms", melspec_preds)
+
         melspec_target = kwargs.get("melspec")[0]
         melspec_target = melspec_target[:kwargs.get("melspec_lengths")[0].item()]
-        waveforms = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0)).squeeze(0)
+        self.writer.add_image("true spectrograms", melspec_target)
+
+        waveform_pred = self.vocoder.inference(melspec_preds.transpose(-2, -1).unsqueeze(0)).squeeze(0)
+        self.writer.add_audio("predicted audio", waveform_pred.cpu(), self.sr)
+
         waveform_true = kwargs.get("waveform")[0]
         waveform_true = waveform_true[:kwargs.get("waveform_lengths")[0].item()]
-        self.writer.add_text("transcripts", transcripts)
-        self.writer.add_image("predicted spectrograms", melspec_preds)
-        self.writer.add_image("true spectrograms", melspec_target)
-        self.writer.add_audio("predicted audio", waveforms.cpu(), self.sr)
         self.writer.add_audio("true audio", waveform_true.cpu(), self.sr)
 
     @torch.no_grad()

@@ -4,6 +4,7 @@ from torch.nn.utils import clip_grad_norm_
 from torchvision.transforms import ToTensor
 from tqdm import tqdm
 
+from tts_hw.alignment import GraphemeAligner, PrecomputedAligner
 from tts_hw.base import BaseTrainer
 from tts_hw.utils import inf_loop, MetricTracker, get_mask_from_lengths
 
@@ -68,9 +69,11 @@ class Trainer(BaseTrainer):
         return batch
 
     def update_batch(self, batch):
-        durations = self.aligner(
-            batch["waveform"], batch["waveform_lengths"], batch["text"]
-        )
+        durations = self.aligner(**batch)
+
+        if isinstance(self.aligner, PrecomputedAligner):
+            batch["durations"] = durations
+            return batch
 
         full_duration = durations.sum(axis=1)
         durations /= full_duration[:, None]

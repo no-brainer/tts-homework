@@ -12,10 +12,12 @@ class CollatorFn:
 
     def __call__(self, instances: List[Tuple]) -> Dict:
         if len(instances[0]) > 3:
-            waveform, waveform_length, transcript, tokens, token_lengths = list(zip(*instances))
+            index, waveform, waveform_length, transcript, tokens, token_lengths = list(zip(*instances))
         else:
             waveform, waveform_length = None, None
-            transcript, tokens, token_lengths = list(zip(*instances))
+            index, transcript, tokens, token_lengths = list(zip(*instances))
+
+        index = torch.cat(index)
 
         if waveform is not None:
             waveform = pad_sequence([
@@ -29,6 +31,7 @@ class CollatorFn:
         token_lengths = torch.cat(token_lengths)
 
         return {
+            "index": index,
             "waveform": waveform,
             "waveform_lengths": waveform_length,
             "text": transcript,

@@ -12,9 +12,9 @@ class PrecomputedAligner(nn.Module):
         self.root = root
 
     @torch.no_grad()
-    def forward(self, indices):
+    def forward(self, index, *args, **kwargs):
         durations = []
-        for idx in indices:
+        for idx in index:
             durations.append(np.load(
                 os.path.join(self.root, f"{idx}.npy")
             ))

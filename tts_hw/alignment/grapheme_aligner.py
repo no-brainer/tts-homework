@@ -53,29 +53,31 @@ class GraphemeAligner(nn.Module):
     @torch.no_grad()
     def forward(
             self,
-            wavs: torch.Tensor,
-            wav_lengths: torch.Tensor,
-            texts: Union[str, List[str]]
+            waveform: torch.Tensor,
+            waveform_lengths: torch.Tensor,
+            text: Union[str, List[str]],
+            *args,
+            **kwargs
     ):
         wav2vec_device = next(self._wav2vec2.parameters()).device
-        wavs = wavs.to(wav2vec_device)
+        waveform = waveform.to(wav2vec_device)
 
-        if isinstance(texts, str):
-            texts = [texts]
-        batch_size = wavs.shape[0]
+        if isinstance(text, str):
+            text = [text]
+        batch_size = waveform.shape[0]
 
         durations = []
         for index in range(batch_size):
-            current_wav = wavs[index, :wav_lengths[index]].unsqueeze(dim=0)
+            current_wav = waveform[index, :waveform_lengths[index]].unsqueeze(dim=0)
             current_wav = self._resampler(current_wav)
             emission, _ = self._wav2vec2(current_wav)
             emission = emission.log_softmax(dim=-1).squeeze(dim=0).cpu()
 
-            tokens = self._decode_text(texts[index])
+            tokens = self._decode_text(text[index])
 
             trellis = self._get_trellis(emission, tokens)
             path = self._backtrack(trellis, emission, tokens)
-            segments = self._merge_repeats(texts[index], path)
+            segments = self._merge_repeats(text[index], path)
 
             num_frames = emission.shape[0]
             relative_durations = torch.tensor([

@@ -58,5 +58,17 @@ class FastSpeech(BaseModel):
         out = self.proj(dec_embs)
         return out, lens, log_durations
 
-    def infer(self):
-        pass
+    def infer(self, text_encoded: Tensor, max_duration=75) -> Tuple[Tensor, Tensor]:
+        x = self.pos_enc(self.emb(text_encoded))
+        text_mask = get_mask_from_padding(text_encoded)
+        enc_embs = self.encoder(x, mask=text_mask)
+
+        durations = torch.clamp(
+            torch.exp(self.duration_pred(enc_embs, text_mask)) - 1, 0, max_duration
+        )
+        upsampled, lens = regulate_len(enc_embs, durations)
+        upsampled = self.pos_enc(upsampled)
+
+        dec_embs = self.decoder(upsampled, mask=get_mask_from_lengths(lens, upsampled.size(1)))
+        out = self.proj(dec_embs)
+        return out, lens

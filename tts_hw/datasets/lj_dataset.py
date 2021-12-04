@@ -4,6 +4,29 @@ import torch
 import torchaudio
 
 
+ABBREVIATIONS = {
+    "Mr.": "Mister",
+    "Mrs.": "Misses",
+    "Dr.": "Doctor",
+    "No.": "Number",
+    "St.": "Saint",
+    "Co.": "Company",
+    "Jr.": "Junior",
+    "Maj.": "Major",
+    "Gen.": "General",
+    "Drs.": "Doctors",
+    "Rev.": "Reverend",
+    "Lt.": "Lieutenant",
+    "Hon.": "Honorable",
+    "Sgt.": "Sergeant",
+    "Capt.": "Captain",
+    "Esq.": "Esquire",
+    "Ltd.": "Limited",
+    "Col.": "Colonel",
+    "Ft.": "Fort",
+}
+
+
 class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
 
     def __init__(self, root, mode, limit=None):
@@ -34,6 +57,8 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         waveform_length = torch.tensor([waveform.shape[-1]]).int()
 
         transcript = self.pattern.sub("", transcript)
+        for abbr, expansion in ABBREVIATIONS.items():
+            transcript = transcript.replace(abbr, expansion)
 
         tokens, token_length = self._tokenizer(transcript)
 

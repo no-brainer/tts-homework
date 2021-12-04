@@ -8,3 +8,4 @@ pandas
 tqdm
 torchvision
 Pillow
+gdown

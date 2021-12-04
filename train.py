@@ -7,7 +7,7 @@ import torch
 
 import tts_hw.loss as module_loss
 import tts_hw.model as module_arch
-from tts_hw.alignment.aligner import GraphemeAligner
+from tts_hw.alignment import GraphemeAligner, PrecomputedAligner
 from tts_hw.datasets.utils import get_dataloaders
 from tts_hw.featurizer.featurizer import MelSpectrogram
 from tts_hw.trainer import Trainer

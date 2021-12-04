@@ -3,7 +3,6 @@ from typing import Tuple
 import torch
 from torch import Tensor
 import torch.nn as nn
-from torch.nn.utils.rnn import pad_sequence
 
 from tts_hw.model.utils import get_same_padding
 

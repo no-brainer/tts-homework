@@ -1,7 +1,5 @@
 import torch
-import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
-from torchvision.transforms import ToTensor
 from tqdm import tqdm
 
 from tts_hw.alignment import GraphemeAligner, PrecomputedAligner
@@ -201,9 +199,6 @@ class Trainer(BaseTrainer):
             self._log_scalars(self.valid_metrics)
             self._log_media(**batch)
 
-        # # add histogram of model parameters to the tensorboard
-        # for name, p in self.model.named_parameters():
-        #     self.writer.add_histogram(name, p, bins="auto")
         return self.valid_metrics.result()
 
     def _progress(self, batch_idx):

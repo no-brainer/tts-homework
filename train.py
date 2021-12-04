@@ -10,6 +10,7 @@ import tts_hw.model as module_arch
 import tts_hw.alignment as module_align
 from tts_hw.datasets.utils import get_dataloaders
 from tts_hw.featurizer.featurizer import MelSpectrogram
+from tts_hw.schedulers.noam import WarmupScheduler
 from tts_hw.trainer import Trainer
 from tts_hw.utils import prepare_device
 from tts_hw.utils.parse_config import ConfigParser
@@ -58,7 +59,10 @@ def main(config):
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = config.init_obj(config["optimizer"], torch.optim, trainable_params)
-    lr_scheduler = config.init_obj(config["lr_scheduler"], torch.optim.lr_scheduler, optimizer)
+    if config["lr_scheduler"]["type"] == "WarmupScheduler":
+        lr_scheduler = WarmupScheduler(optimizer, **config["lr_scheduler"]["args"])
+    else:
+        lr_scheduler = config.init_obj(config["lr_scheduler"], torch.optim.lr_scheduler, optimizer)
 
     trainer = Trainer(
         model,

@@ -35,6 +35,7 @@ I trained model with this aligner for 17 hours in total. The results were not gr
 Example:
 
 The sentence is `The Chronicles of Newgate, Volume two. By Arthur Griffiths. Section four: Newgate down to eighteen eighteen.`
+
 ![Original audio](audio_samples/true_orig_aligner.wav)
 ![Predicted audio](audio_samples/predicted_orig_aligner.wav)
 
@@ -52,4 +53,8 @@ The examples of audio are provided in the section [Results](#results).
 
 
 ### Abbreviations
-I was really surprised to learn that `torchaudio`'s pipelines did not do the abbreviation expansion.
+I was surprised to learn that `torchaudio`'s pipelines did not do the expansion. The dataset contains a lot of abbreviations hence the lack of expansion can really affect the loss. 
+
+Another challenge were non-ASCII symbols in the dataset. Dataset's webpage mentions non-ASCII symbols, however there is no information about which symbols they are. Turns out there is a variety of diacritics and umlauts because the dataset contains quotes from languages other than English. I replace such symbols with their respective ASCII version.
+
+There are also some other symbols that tokenizer does not support. I simply delete such characters.

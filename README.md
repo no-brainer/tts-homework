@@ -28,7 +28,7 @@ TODO
 ## Experiments
 
 ### Aligner
-The original aligner used durations that were extracted from wav2vec. Since this aligner computed durations in waveform there were problems with rounding during duration modeling. 
+The [original aligner](./tts_hw/alignment/grapheme_aligner.py) used durations that were extracted from wav2vec. Since this aligner computed durations in waveform there were problems with rounding during duration modeling. 
 
 I trained model with this aligner for 17 hours in total. The results were not great, but the sentences are mostly legible. I tried training FastSpeech with this aligner with various schedulers without much improvement. 
 
@@ -45,7 +45,7 @@ The spectrograms are oversmoothed, but you can see some faint patterns in low fr
 ![Predicted spectrogram](imgs/predicted_orig_aligner.png)
 
 
-Another set of alignments wes taken from an [open-source implementation](https://github.com/xcmyz/FastSpeech). These alignments have the exact same shape as our encoded texts and they were extracted from Tacotron. There were no rounding problems because the alignments were computed in melspectrogram.
+Another [set of alignments](./tts_hw/alignment/precomp_aligner.py) wes taken from an [open-source implementation](https://github.com/xcmyz/FastSpeech). These alignments have the exact same shape as our encoded texts and they were extracted from Tacotron. There were no rounding problems because the alignments were computed in melspectrogram.
 
 Using precomputed alignments greatly boosted the quality. The convergence improved, too. My model was able to reach the same quality as the previous one in under 1 hour.
 
@@ -55,6 +55,6 @@ The examples of audio are provided in the section [Results](#results).
 ### Abbreviations
 I was surprised to learn that `torchaudio`'s pipelines did not do the expansion. The dataset contains a lot of abbreviations hence the lack of expansion can really affect the loss. 
 
-Another challenge were non-ASCII symbols in the dataset. Dataset's webpage mentions non-ASCII symbols, however there is no information about which symbols they are. Turns out there is a variety of diacritics and umlauts because the dataset contains quotes from languages other than English. I replace such symbols with their respective ASCII version.
+Another challenge were non-ASCII symbols in the dataset. Dataset's webpage mentions non-ASCII symbols, however there is no information about which symbols they are. Turns out there is a variety of diacritics and umlauts because the dataset contains quotes from languages other than English. I [replace such symbols](./tts_hw/datasets/lj_dataset.py#L58) with their respective ASCII version.
 
 There are also some other symbols that tokenizer does not support. I simply delete such characters.

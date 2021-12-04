@@ -13,7 +13,10 @@
         "power": 1.0
       },
       "aligner": {
-        "orig_sr": 22050
+        "type": "PrecomputedAligner",
+        "args": {
+            "root": "./data/alignments"
+        }
       }
     },
   "arch": {
@@ -36,8 +39,8 @@
   },
   "data": {
     "train": {
-      "batch_size": 2,
-      "num_workers": 0,
+      "batch_size": 32,
+      "num_workers": 2,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {
@@ -47,8 +50,8 @@
       }
     },
     "val": {
-      "batch_size": 2,
-      "num_workers": 0,
+      "batch_size": 32,
+      "num_workers": 2,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {
@@ -73,16 +76,16 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 100,
-      "epochs": 50,
+      "steps_per_epoch": 201,
+      "epochs": 100,
       "anneal_strategy": "cos",
-      "max_lr": 2e-5,
+      "max_lr": 5e-4,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 50,
-    "len_epoch": 100,
+    "epochs": 100,
+    "len_epoch": 200,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
@@ -90,6 +93,6 @@
     "early_stop": -1,
     "visualize": "wandb",
     "wandb_project": "tts-hw",
-    "grad_norm_clip": 10
+    "grad_norm_clip": 120
   }
 }

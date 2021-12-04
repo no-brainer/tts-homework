@@ -13,7 +13,10 @@
         "power": 1.0
       },
       "aligner": {
-        "orig_sr": 22050
+        "type": "GraphemeAligner",
+        "args": {
+          "orig_sr": 22050
+        }
       }
     },
   "arch": {

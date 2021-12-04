@@ -38,7 +38,7 @@ class LJSpeechDataset(torchaudio.datasets.LJSPEECH):
         self.test_size = full_size - self.train_size
 
         self.non_ascii = list('"üêàéâè“”’[]')
-        self.non_ascii_replacements = ["", "u", "e", "a", "e", "a", "e", "", "'", "", ""]
+        self.non_ascii_replacements = ["", "u", "e", "a", "e", "a", "e", "", "", "'", "", ""]
 
     def __len__(self):
         if self.limit is not None:

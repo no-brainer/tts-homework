@@ -71,21 +71,21 @@ class Trainer(BaseTrainer):
     def update_batch(self, batch):
         durations = self.aligner(**batch)
 
-        if isinstance(self.aligner, PrecomputedAligner):
-            batch["durations"] = durations
-            return batch
+        if isinstance(self.aligner, GraphemeAligner):
+            full_duration = durations.sum(axis=1)
+            durations /= full_duration[:, None]
 
-        full_duration = durations.sum(axis=1)
-        durations /= full_duration[:, None]
-
-        batch["waveform_lengths"] = (batch["waveform_lengths"].double() * full_duration).long()
-        batch["waveform"] *= get_mask_from_lengths(batch["waveform_lengths"], batch["waveform"].size(1))
+            batch["waveform_lengths"] = (batch["waveform_lengths"].double() * full_duration).long()
+            batch["waveform"] *= get_mask_from_lengths(batch["waveform_lengths"], batch["waveform"].size(1))
 
         melspec = self.featurizer(batch["waveform"])
         batch["melspec_lengths"] = (batch["waveform_lengths"] / self.featurizer.hop_length).long()
         batch["melspec"] = melspec.transpose(-1, -2)
 
-        batch["durations"] = durations * batch["melspec_lengths"][:, None]
+        if isinstance(self.aligner, GraphemeAligner):
+            durations *= batch["melspec_lengths"][:, None]
+
+        batch["durations"] = durations
 
         return batch
 

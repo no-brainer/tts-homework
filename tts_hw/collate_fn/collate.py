@@ -17,8 +17,6 @@ class CollatorFn:
             waveform, waveform_length = None, None
             index, transcript, tokens, token_lengths = list(zip(*instances))
 
-        index = torch.cat(index)
-
         if waveform is not None:
             waveform = pad_sequence([
                 waveform_[0] for waveform_ in waveform

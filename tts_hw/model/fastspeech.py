@@ -58,6 +58,7 @@ class FastSpeech(BaseModel):
         out = self.proj(dec_embs)
         return out, lens, log_durations
 
+    @torch.no_grad()
     def infer(self, text_encoded: Tensor, max_duration=75) -> Tuple[Tensor, Tensor]:
         x = self.pos_enc(self.emb(text_encoded))
         text_mask = get_mask_from_padding(text_encoded)

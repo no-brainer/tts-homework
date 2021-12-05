@@ -10,7 +10,7 @@ The script downloads the necessary resources.
 
 Model checkpoint can be downloaded with the following command:
 ```shell script
-gdown --id TODO -O best_checkpoint.pth
+gdown --id 1wk7amOThMnfZtoMEKELT399rANOy1ZnN -O best_checkpoint.pth
 ```
 
 ## Results

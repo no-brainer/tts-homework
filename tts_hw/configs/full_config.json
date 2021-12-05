@@ -39,8 +39,8 @@
   },
   "data": {
     "train": {
-      "batch_size": 32,
-      "num_workers": 2,
+      "batch_size": 64,
+      "num_workers": 8,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {
@@ -50,8 +50,8 @@
       }
     },
     "val": {
-      "batch_size": 32,
-      "num_workers": 2,
+      "batch_size": 64,
+      "num_workers": 8,
       "dataset": {
         "type": "LJSpeechDataset",
         "args": {
@@ -64,7 +64,8 @@
   "optimizer": {
     "type": "AdamW",
     "args": {
-      "lr": 2e-5
+      "lr": 0.0,
+      "weight_decay": 1e-6
     }
   },
   "loss": {
@@ -74,18 +75,16 @@
     }
   },
   "lr_scheduler": {
-    "type": "OneCycleLR",
+    "type": "WarmupScheduler",
     "args": {
-      "steps_per_epoch": 201,
-      "epochs": 100,
-      "anneal_strategy": "cos",
-      "max_lr": 5e-4,
-      "pct_start": 0.2
+      "model_size": 384,
+      "factor": 0.5,
+      "warmup_steps": 4000
     }
   },
   "trainer": {
-    "epochs": 100,
-    "len_epoch": 200,
+    "epochs": 40,
+    "len_epoch": 500,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,

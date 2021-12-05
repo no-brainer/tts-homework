@@ -18,8 +18,16 @@ gdown --id TODO -O best_checkpoint.pth
 Here are samples of the synthesized speech:
 
 * `A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest`
+
+![Predicted audio](./audio_samples/test0.wav)
+
 * `Massachusetts Institute of Technology may be best known for its math, science and engineering education`
+
+![Predicted audio](./audio_samples/test1.wav)
+
 * `Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined between probability distributions on a given metric space`
+
+![Predicted audio](./audio_samples/test2.wav)]
 
 ## Training
 
@@ -30,7 +38,7 @@ TODO
 ### Aligner
 The [original aligner](./tts_hw/alignment/grapheme_aligner.py) used durations that were extracted from wav2vec. Since this aligner computed durations in waveform there were problems with rounding during duration modeling. 
 
-I trained model with this aligner for 17 hours in total. The results were not great, but the sentences are mostly legible. I tried training FastSpeech with this aligner with various schedulers without much improvement. 
+I trained model with this aligner for 17 hours in total. The results were not great, but the sentences are mostly legible.
 
 Example:
 
@@ -58,3 +66,8 @@ I was surprised to learn that `torchaudio`'s pipelines did not do the expansion.
 Another challenge were non-ASCII symbols in the dataset. Dataset's webpage mentions non-ASCII symbols, however there is no information about which symbols they are. Turns out there is a variety of diacritics and umlauts because the dataset contains quotes from languages other than English. I [replace such symbols](./tts_hw/datasets/lj_dataset.py#L58) with their respective ASCII version.
 
 There are also some other symbols that tokenizer does not support. I simply delete such characters.
+
+### Hyperparameters
+I took model hyperparameters from FastSpeech paper and I did not change them at all. I mainly experimented with learning rate and various schedulers.
+
+Model achieved good results with OneCycleLR and with WarmupScheduler from the original Transformer paper. 

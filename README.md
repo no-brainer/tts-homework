@@ -27,11 +27,13 @@ Here are samples of the synthesized speech:
 
 * `Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined between probability distributions on a given metric space`
 
-![Predicted audio](./audio_samples/test2.wav)]
+![Predicted audio](./audio_samples/test2.wav)
 
 ## Training
 
-TODO
+The logs can be found in [W&B](https://wandb.ai/ngtvx/tts-hw/runs/3qovc0uj/).
+
+The final model trained for 40 epochs with [this config](./tts_hw/configs/full_config.json). Training took 11 hours and 51 minutes.
 
 ## Experiments
 
@@ -47,7 +49,7 @@ The sentence is `The Chronicles of Newgate, Volume two. By Arthur Griffiths. Sec
 ![Original audio](audio_samples/true_orig_aligner.wav)
 ![Predicted audio](audio_samples/predicted_orig_aligner.wav)
 
-The spectrograms are oversmoothed, but you can see some faint patterns in low frequencies which is not bad (left - original, right - predicted).
+The spectrograms are oversmoothed, but you can see some faint patterns in low frequencies which is not bad (upper - original, lower - predicted).
 
 ![Original spectrogram](imgs/true_orig_aligner.png)
 ![Predicted spectrogram](imgs/predicted_orig_aligner.png)
@@ -70,4 +72,12 @@ There are also some other symbols that tokenizer does not support. I simply dele
 ### Hyperparameters
 I took model hyperparameters from FastSpeech paper and I did not change them at all. I mainly experimented with learning rate and various schedulers.
 
-Model achieved good results with OneCycleLR and with WarmupScheduler from the original Transformer paper. 
+Model achieved good results with OneCycleLR and with [WarmupScheduler](./tts_hw/schedulers/noam.py) from the original Transformer paper. With WarmupScheduler model trained faster, so I picked it as a final model.
+
+The spectrograms look significantly better than the previous example (upper - original, lower - predicted).
+![Original spectrogram](imgs/true_final.png)
+![Predicted spectrogram](imgs/predicted_final.png)
+
+## Challenges
+
+As usual, hardware is the main challenge. Models require very long training, so there is no way around DataSphere...

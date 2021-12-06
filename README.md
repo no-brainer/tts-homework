@@ -15,6 +15,8 @@ gdown --id 1wk7amOThMnfZtoMEKELT399rANOy1ZnN -O best_checkpoint.pth
 
 ## Results
 
+**IMPORTANT:** I USE PRECOMPUTED ALIGNMENTS
+
 Here are samples of the synthesized speech:
 
 * `A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest`

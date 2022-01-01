@@ -1,5 +1,7 @@
 # TTS project
 
+This is an implementation of [Fast Speech paper](https://arxiv.org/abs/1905.09263).
+
 ## Installation
 
 The script downloads the necessary resources.
@@ -80,6 +82,3 @@ The spectrograms look significantly better than the previous example (upper - or
 ![Original spectrogram](imgs/true_final.png)
 ![Predicted spectrogram](imgs/predicted_final.png)
 
-## Challenges
-
-As usual, hardware is the main challenge. Models require very long training, so there is no way around DataSphere...
